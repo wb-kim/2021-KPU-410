@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+.s4 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.kpu410.realbike</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Activity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.bluetooth.BluetoothAdapter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">app.akexorcist.bluetotohspp.library.BluetoothSPP</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">app.akexorcist.bluetotohspp.library.BluetoothState</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">app.akexorcist.bluetotohspp.library.DeviceList</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s0">private </span><span class="s1">BluetoothSPP bt</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_main)</span><span class="s0">;</span>
+        <span class="s1">bt = </span><span class="s0">new </span><span class="s1">BluetoothSPP(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">; </span><span class="s2">//Initializing</span>
+
+        <span class="s0">if </span><span class="s1">(!bt.isBluetoothAvailable()) { </span><span class="s2">//블루투스 사용 불가</span>
+            <span class="s1">Toast.makeText(getApplicationContext()</span>
+                    <span class="s0">, </span><span class="s3">&quot;Bluetooth is not available&quot;</span>
+                    <span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">finish()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">bt.setOnDataReceivedListener(</span><span class="s0">new </span><span class="s1">BluetoothSPP.OnDataReceivedListener() { </span><span class="s2">//데이터 수신</span>
+            <span class="s1">TextView total = findViewById(R.id.total)</span><span class="s0">;</span>
+            <span class="s1">TextView speed = findViewById(R.id.speed)</span><span class="s0">;</span>
+            <span class="s1">TextView distance = findViewById(R.id.distance)</span><span class="s0">;</span>
+
+            <span class="s0">public void </span><span class="s1">onDataReceived(</span><span class="s0">byte</span><span class="s1">[] data</span><span class="s0">, </span><span class="s1">String message) {</span>
+                <span class="s1">String[] array = message.split(</span><span class="s3">&quot;,&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">total.setText(message)</span><span class="s0">;</span>
+                <span class="s1">speed.setText(array[</span><span class="s4">0</span><span class="s1">].concat(</span><span class="s3">&quot;km/h&quot;</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">distance.setText(array[</span><span class="s4">1</span><span class="s1">].concat(</span><span class="s3">&quot;km&quot;</span><span class="s1">))</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">bt.setBluetoothConnectionListener(</span><span class="s0">new </span><span class="s1">BluetoothSPP.BluetoothConnectionListener() { </span><span class="s2">//연결됐을 때</span>
+            <span class="s0">public void </span><span class="s1">onDeviceConnected(String name</span><span class="s0">, </span><span class="s1">String address) {</span>
+                <span class="s1">Toast.makeText(getApplicationContext()</span>
+                        <span class="s0">, </span><span class="s3">&quot;Connected to &quot; </span><span class="s1">+ name + </span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ address</span>
+                        <span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+            <span class="s0">public void </span><span class="s1">onDeviceDisconnected() { </span><span class="s2">//연결해제</span>
+                <span class="s1">Toast.makeText(getApplicationContext()</span>
+                        <span class="s0">, </span><span class="s3">&quot;Connection lost&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+            <span class="s0">public void </span><span class="s1">onDeviceConnectionFailed() { </span><span class="s2">//연결실패</span>
+                <span class="s1">Toast.makeText(getApplicationContext()</span>
+                        <span class="s0">, </span><span class="s3">&quot;Unable to connect&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">Button btnConnect = findViewById(R.id.btnConnect)</span><span class="s0">; </span><span class="s2">//연결시도</span>
+        <span class="s1">btnConnect.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s0">if </span><span class="s1">(bt.getServiceState() == BluetoothState.STATE_CONNECTED) {</span>
+                    <span class="s1">bt.disconnect()</span><span class="s0">;</span>
+                <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getApplicationContext()</span><span class="s0">, </span><span class="s1">DeviceList.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">startActivityForResult(intent</span><span class="s0">, </span><span class="s1">BluetoothState.REQUEST_CONNECT_DEVICE)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">onDestroy() {</span>
+        <span class="s0">super</span><span class="s1">.onDestroy()</span><span class="s0">;</span>
+        <span class="s1">bt.stopService()</span><span class="s0">; </span><span class="s2">//블루투스 중지</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">onStart() {</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(!bt.isBluetoothEnabled()) { </span><span class="s2">//</span>
+            <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)</span><span class="s0">;</span>
+            <span class="s1">startActivityForResult(intent</span><span class="s0">, </span><span class="s1">BluetoothState.REQUEST_ENABLE_BT)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+            <span class="s0">if </span><span class="s1">(!bt.isServiceAvailable()) {</span>
+                <span class="s1">bt.setupService()</span><span class="s0">;</span>
+                <span class="s1">bt.startService(BluetoothState.DEVICE_OTHER)</span><span class="s0">; </span><span class="s2">//DEVICE_ANDROID는 안드로이드 기기 끼리</span>
+                <span class="s1">setup()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">setup() {</span>
+        <span class="s1">Button btnReset = findViewById(R.id.btnReset)</span><span class="s0">; </span><span class="s2">//데이터 전송</span>
+        <span class="s1">btnReset.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">bt.send(</span><span class="s3">&quot;Reset&quot;</span><span class="s0">, true</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">onActivityResult(</span><span class="s0">int </span><span class="s1">requestCode</span><span class="s0">, int </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">Intent data) {</span>
+        <span class="s0">super</span><span class="s1">.onActivityResult(requestCode</span><span class="s0">, </span><span class="s1">resultCode</span><span class="s0">, </span><span class="s1">data)</span><span class="s0">;</span>
+        <span class="s0">if </span><span class="s1">(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {</span>
+            <span class="s0">if </span><span class="s1">(resultCode == Activity.RESULT_OK)</span>
+                <span class="s1">bt.connect(data)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">else if </span><span class="s1">(requestCode == BluetoothState.REQUEST_ENABLE_BT) {</span>
+            <span class="s0">if </span><span class="s1">(resultCode == Activity.RESULT_OK) {</span>
+                <span class="s1">bt.setupService()</span><span class="s0">;</span>
+                <span class="s1">bt.startService(BluetoothState.DEVICE_OTHER)</span><span class="s0">;</span>
+                <span class="s1">setup()</span><span class="s0">;</span>
+            <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                <span class="s1">Toast.makeText(getApplicationContext()</span>
+                        <span class="s0">, </span><span class="s3">&quot;Bluetooth was not enabled.&quot;</span>
+                        <span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s1">finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>
