@@ -60,21 +60,30 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
  */
 public class MapActivity extends AppCompatActivity {
     private static final String API_KEY="AIzaSyAIgidUd3VceMR-6DnCFvrFNyySINLiVWo";
+    private static final double CIRCLE = 4.11;
     private String strUrl = null;           // EditText + API URL
 
     private StreetViewPanorama streetViewPanorama;
-    private LatLng[] routeLatLng;
+    private LatLng[][] routeLatLng;
 
     private int list_len = 0;
     private int route_len = 0;
+    private int route2_len = 0;
 
     private int temp = 0;
     private int count = 0;
+    private double[] feet;
 
     private BluetoothSPP bt;
 
     private String startLoc;
     private String finishLoc;
+
+    private String moveLength;
+
+    private long start;
+    private long end;
+    private double moveTime;
 
     private LatLng startLatLng;
 
@@ -82,6 +91,8 @@ public class MapActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        start = System.currentTimeMillis();
 
         Intent searchIntent = getIntent();
         startLoc = searchIntent.getStringExtra("startLoc");
@@ -98,14 +109,14 @@ public class MapActivity extends AppCompatActivity {
 
         bluetoothConnect();
         jsonPashing();
-        routeLatLng[0] = startLatLng;
+        routeLatLng[0][0] = startLatLng;
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             TextView distance = findViewById(R.id.distance);
 
             public void onDataReceived(byte[] data, String message) {
-                String[] array = new String[3];
-                array = message.split(",");
+                String[] array = message.split(",");
+                moveLength = array[2];
                 //String total = "시속 : ".concat((array[1].concat("km/h, 이동 거리 : ")).concat(array[2].concat("km")));
                 distance.setText(message);
 
@@ -126,9 +137,13 @@ public class MapActivity extends AppCompatActivity {
                     if(route_len == routeLatLng.length - 1) {
                         finishDrive();
                     } else {
-                        route_len++;
-                        streetViewPanorama.setPosition(routeLatLng[route_len]);
-                        Log.i("경로 확인", route_len + " : " + routeLatLng[route_len]);
+                        if (route2_len == routeLatLng[list_len].length) {
+                            route_len++;
+                        } else {
+                            route2_len++;
+                            streetViewPanorama.setPosition(routeLatLng[route_len][route2_len]);
+                            Log.i("경로 확인", route_len + " : " + routeLatLng[route_len][route2_len]);
+                        }
                     }
                 }
             }
@@ -163,32 +178,41 @@ public class MapActivity extends AppCompatActivity {
                     public void onStreetViewPanoramaReady(StreetViewPanorama panorama) {
                         streetViewPanorama = panorama;
                         if (savedInstanceState == null) {
-                            panorama.setPosition(routeLatLng[0]);
+                            panorama.setPosition(routeLatLng[0][0]);
                         }
                     }
 
                 });
+
+        Button btnExit = findViewById(R.id.btnExit);
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                end = System.currentTimeMillis();
+                moveTime = (end - start) / 1000;
+                Intent resultIntent = new Intent(getApplicationContext(), ResultActivity.class);
+                resultIntent.putExtra("moveLength", moveLength);
+                resultIntent.putExtra("moveTime", moveTime);
+                startActivity(resultIntent);
+            }
+        });
     }
-
-
-    /*private boolean checkReady() {
-        if (streetViewPanorama == null) {
-            Toast.makeText(this, "Street view is not ready.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }*/
 
     public void finishDrive() {
         AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(MapActivity.this);
         dlgBuilder.setTitle("주행 종료");
         dlgBuilder.setMessage("목적지까지의 주행이 완료되었습니다.");
-        dlgBuilder.setPositiveButton("이전 페이지로", new DialogInterface.OnClickListener() {
+        dlgBuilder.setPositiveButton("결과 페이지로", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
+                end = System.currentTimeMillis();
+                moveTime = (end - start) / 1000;
+                Intent resultIntent = new Intent(getApplicationContext(), ResultActivity.class);
+                resultIntent.putExtra("moveLength", moveLength);
+                resultIntent.putExtra("moveTime", moveTime);
+                startActivity(resultIntent);
+                }
+            });
         AlertDialog dlg = dlgBuilder.create();
         dlg.show();
     }
@@ -261,18 +285,13 @@ public class MapActivity extends AppCompatActivity {
 
             startLatLng = new LatLng(sLat, sLng);
 
-            /*String finishL = legJsonObject.getString("end_location");
-            JSONObject finishLObject = new JSONObject(finishL);
-            double fLat = finishLObject.getDouble("lat");
-            double fLng = finishLObject.getDouble("lng");
-
-            finishLatLng = new LatLng(fLat, fLng);*/
-
             String steps = legJsonObject.getString("steps");
             JSONArray stepsArray = new JSONArray(steps);
             list_len = stepsArray.length();
 
-            routeLatLng = new LatLng[list_len + 1];
+            routeLatLng = new LatLng[list_len + 1][];
+            routeLatLng[0][0] = startLatLng;
+            feet = new double[list_len];
 
             for (int i = 0; i < list_len; i++) {
                 JSONObject stepsObject = stepsArray.getJSONObject(i);
@@ -282,7 +301,34 @@ public class MapActivity extends AppCompatActivity {
                 double eLat = endObject.getDouble("lat");
                 double eLng = endObject.getDouble("lng");
 
-                routeLatLng[i + 1] = new LatLng(eLat, eLng);
+                String distance = stepsObject.getString("distance");
+                JSONObject distanceObject = new JSONObject(distance);
+                String[] array = distanceObject.getString(" ").split(",");
+
+                int distanceT;
+                if (array[1] == "mi") {
+                    distanceT = (int)(Double.parseDouble(array[0]) * 5280);
+                } else {
+                    distanceT = Integer.parseInt(array[0]);
+                }
+
+                feet[i] = distanceT / CIRCLE;
+
+                routeLatLng[i + 1][0] = new LatLng(eLat, eLng);
+                routeLatLng[i] = new LatLng[(int)feet[i] + 1];
+                double lastLat = routeLatLng[i][0].latitude;
+                double lastLng = routeLatLng[i][0].longitude;
+                double nowLat = routeLatLng[i + 1][0].latitude;
+                double nowLng = routeLatLng[i + 1][0].longitude;
+
+                double diffLat = (nowLat - lastLat) / feet[i];
+                double diffLng = (nowLng - lastLng) / feet[i];
+
+                for (int j = 0; j < (feet[i] + 1); j++) {
+                    routeLatLng[i + 1][0] = new LatLng(eLat, eLng);
+
+                    routeLatLng[i][j + 1] = new LatLng(lastLat + diffLat, lastLng + diffLng);
+                }
             }
 
         } catch (JSONException e) {
@@ -314,7 +360,7 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public void setup() {
-        Button exit = findViewById(R.id.exit); //데이터 전송
+        Button exit = findViewById(R.id.btnExit); //데이터 전송
         exit.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 bt.send("Reset", true);
