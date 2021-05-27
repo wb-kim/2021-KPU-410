@@ -29,9 +29,10 @@
             android:required="false" />
 
         <activity android:name=".SearchActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".MapActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
