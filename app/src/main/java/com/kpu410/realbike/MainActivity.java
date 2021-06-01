@@ -17,12 +17,28 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BluetoothSPP bt;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button btnMyPage = findViewById(R.id.btnMyPage);
+        btnMyPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnCommunity = findViewById(R.id.btnCommunity);
+        btnCommunity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CommunityActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Button btnMap = findViewById(R.id.btnMap);
         btnMap.setOnClickListener(new View.OnClickListener() {

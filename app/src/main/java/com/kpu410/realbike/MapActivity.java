@@ -116,10 +116,11 @@ public class MapActivity extends AppCompatActivity {
 
             public void onDataReceived(byte[] data, String message) {
                 String[] array = message.split(",");
+                Log.i("test", message);
+                Log.i("test", " "+ array.size );
                 moveLength = array[2];
                 //String total = "시속 : ".concat((array[1].concat("km/h, 이동 거리 : ")).concat(array[2].concat("km")));
                 distance.setText(message);
-
                 temp = 0;
 
                 String checkArray = array[0];

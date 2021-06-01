@@ -1,46 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".MyPageActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:textSize="40sp"
         android:layout_gravity="center"
-        android:text="메인(로고 예정)"/>
+        android:text="마이 페이지(로고 예정)"/>
 
 
     <Button
-        android:id="@+id/btnMyPage"
+        android:id="@+id/btnInfo"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:text="마이 페이지"/>
+        android:text="회원 정보"/>
 
     <Button
-        android:id="@+id/btnMap"
+        android:id="@+id/btnDashboard"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:text="주행"/>
-
-    <Button
-        android:id="@+id/btnTest"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:text="주행(지도 X)"/>
-
-    <Button
-        android:id="@+id/btnCommunity"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:text="커뮤니티"/>
-
+        android:text="대시보드"/>
 </LinearLayout>
