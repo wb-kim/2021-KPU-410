@@ -49,6 +49,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
@@ -64,15 +68,17 @@ public class MapActivity extends AppCompatActivity {
     private String strUrl = null;           // EditText + API URL
 
     private StreetViewPanorama streetViewPanorama;
-    private LatLng[][] routeLatLng;
+    //private LatLng[] routeLatLng;
+    //private List<Double> routeLat = new ArrayList();
+    //private List<Double> routeLng = new ArrayList();
+    private List<LatLng> routeLatLng = new ArrayList();
 
     private int list_len = 0;
     private int route_len = 0;
-    private int route2_len = 0;
 
     private int temp = 0;
     private int count = 0;
-    private double[] feet;
+    private int[] feet;
 
     private BluetoothSPP bt;
 
@@ -86,6 +92,8 @@ public class MapActivity extends AppCompatActivity {
     private double moveTime;
 
     private LatLng startLatLng;
+    private double startLat;
+    private double startLng;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -107,9 +115,15 @@ public class MapActivity extends AppCompatActivity {
             finish();
         }
 
+        //routeLat.add(0, startLat);
+        //routeLng.add(0, startLng);
+
         bluetoothConnect();
         jsonPashing();
-        routeLatLng[0][0] = startLatLng;
+
+
+        Log.i("size", String.valueOf(routeLatLng.size()));
+
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             TextView distance = findViewById(R.id.distance);
@@ -117,8 +131,7 @@ public class MapActivity extends AppCompatActivity {
             public void onDataReceived(byte[] data, String message) {
                 String[] array = message.split(",");
                 Log.i("test", message);
-                Log.i("test", " "+ array.size );
-                moveLength = array[2];
+                //moveLength = array[2];
                 //String total = "시속 : ".concat((array[1].concat("km/h, 이동 거리 : ")).concat(array[2].concat("km")));
                 distance.setText(message);
                 temp = 0;
@@ -132,19 +145,15 @@ public class MapActivity extends AppCompatActivity {
                         count = 0;
                     }
                 }
-                Log.i("배열 확인", check+","+temp+","+routeLatLng.length);
+                //Log.i("배열 확인", check+","+temp+","+routeLat.length+","+routeLng.length);
+                Log.i("경로 확인", route_len + " : " + routeLatLng.get(route_len).latitude + "," + routeLatLng.get(route_len).longitude);
 
                 if (temp == 1) {
-                    if(route_len == routeLatLng.length - 1) {
+                    if (route_len == routeLatLng.size()) {
                         finishDrive();
                     } else {
-                        if (route2_len == routeLatLng[list_len].length) {
-                            route_len++;
-                        } else {
-                            route2_len++;
-                            streetViewPanorama.setPosition(routeLatLng[route_len][route2_len]);
-                            Log.i("경로 확인", route_len + " : " + routeLatLng[route_len][route2_len]);
-                        }
+                        route_len++;
+                        streetViewPanorama.setPosition(routeLatLng.get(route_len));
                     }
                 }
             }
@@ -179,7 +188,7 @@ public class MapActivity extends AppCompatActivity {
                     public void onStreetViewPanoramaReady(StreetViewPanorama panorama) {
                         streetViewPanorama = panorama;
                         if (savedInstanceState == null) {
-                            panorama.setPosition(routeLatLng[0][0]);
+                            panorama.setPosition(routeLatLng.get(0));
                         }
                     }
 
@@ -285,14 +294,20 @@ public class MapActivity extends AppCompatActivity {
             double sLng = startLObject.getDouble("lng");
 
             startLatLng = new LatLng(sLat, sLng);
+            //startLat = sLat;
+            //startLng = sLng;
+
+            routeLatLng.add(0, startLatLng);
 
             String steps = legJsonObject.getString("steps");
             JSONArray stepsArray = new JSONArray(steps);
             list_len = stepsArray.length();
 
-            routeLatLng = new LatLng[list_len + 1][];
-            routeLatLng[0][0] = startLatLng;
-            feet = new double[list_len];
+            //routeLatLng = new LatLng[list_len + 1][list_len + 1];
+
+            feet = new int[list_len];
+
+            //routeLatLng = new ArrayList<>();
 
             for (int i = 0; i < list_len; i++) {
                 JSONObject stepsObject = stepsArray.getJSONObject(i);
@@ -304,31 +319,38 @@ public class MapActivity extends AppCompatActivity {
 
                 String distance = stepsObject.getString("distance");
                 JSONObject distanceObject = new JSONObject(distance);
-                String[] array = distanceObject.getString(" ").split(",");
+                String[] array = distanceObject.getString("text").split(" ");
 
                 int distanceT;
-                if (array[1] == "mi") {
+                if (array[1].equals("mi")) {
                     distanceT = (int)(Double.parseDouble(array[0]) * 5280);
                 } else {
                     distanceT = Integer.parseInt(array[0]);
                 }
 
-                feet[i] = distanceT / CIRCLE;
+                feet[i] = (int)(distanceT / CIRCLE);
+                Log.i("feet size", String.valueOf(feet[i]));
 
-                routeLatLng[i + 1][0] = new LatLng(eLat, eLng);
-                routeLatLng[i] = new LatLng[(int)feet[i] + 1];
-                double lastLat = routeLatLng[i][0].latitude;
-                double lastLng = routeLatLng[i][0].longitude;
-                double nowLat = routeLatLng[i + 1][0].latitude;
-                double nowLng = routeLatLng[i + 1][0].longitude;
+                //double lastLat = routeLatLng.get(i).latitude;
+                //double lastLng = routeLatLng.get(i).longitude;
+                //double nowLat = eLat;
+                //double nowLng = eLng;
+                LatLng lastLatLng = routeLatLng.get(routeLatLng.size() - 1);
+                double diffLat = (eLat - lastLatLng.latitude) / feet[i];
+                double diffLng = (eLng - lastLatLng.longitude) / feet[i];
+                Log.i("diffLatLng", String.valueOf(diffLat) + "," + String.valueOf(diffLng));
 
-                double diffLat = (nowLat - lastLat) / feet[i];
-                double diffLng = (nowLng - lastLng) / feet[i];
+
+                double addLat = lastLatLng.latitude;
+                double addLng = lastLatLng.longitude;
 
                 for (int j = 0; j < (feet[i] + 1); j++) {
-                    routeLatLng[i + 1][0] = new LatLng(eLat, eLng);
+                    addLat += diffLat;
+                    addLng += diffLng;
+                    routeLatLng.add(new LatLng(addLat, addLng));
+                    //routeLng.add(lastLng + diffLng);
 
-                    routeLatLng[i][j + 1] = new LatLng(lastLat + diffLat, lastLng + diffLng);
+                    //routeLatLng[capacity + j] = new LatLng(lastLat + diffLat, lastLng + diffLng);
                 }
             }
 

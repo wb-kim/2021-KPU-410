@@ -12,6 +12,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:hint="출발지"
+        android:text="뉴욕"
         android:focusable="false"
         android:textSize="15sp"/>
 
@@ -21,6 +22,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:hint="도착지"
+        android:text="타임즈 스퀘어"
         android:focusable="false"
         android:textSize="15sp"/>
 

@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.REALBIKE">
-        <activity android:name=".CommunityActivity"></activity>
+        <activity android:name=".WriteActivity"></activity>
+        <activity android:name=".CommunityActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".InfoActivity" />
         <activity android:name=".MyPageActivity" />
@@ -32,17 +33,17 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".MapActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".SearchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".MapActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>
