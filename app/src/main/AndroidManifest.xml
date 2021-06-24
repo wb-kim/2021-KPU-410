@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.REALBIKE">
-        <activity android:name=".WriteActivity"></activity>
+        <activity android:name=".DriveActivity"></activity>
+        <activity android:name=".WriteActivity" />
         <activity android:name=".CommunityActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".InfoActivity" />
@@ -43,7 +44,7 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity" />
     </application>
 
 </manifest>

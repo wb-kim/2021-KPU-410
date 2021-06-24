@@ -62,7 +62,7 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 /**
  * This shows how to create a simple activity with streetview
  */
-public class MapActivity extends AppCompatActivity {
+public class DriveActivity extends AppCompatActivity {
     private static final String API_KEY="AIzaSyAIgidUd3VceMR-6DnCFvrFNyySINLiVWo";
     private static final double CIRCLE = 4.11;
     private String strUrl = null;           // EditText + API URL
@@ -85,29 +85,26 @@ public class MapActivity extends AppCompatActivity {
 
     private String moveLength;
 
-    private String moveTime;
+    private double startTime;
+    private double endTime;
+    private int moveTime;
 
     private LatLng startLatLng;
-
-    private Button btnExit = findViewById(R.id.btnMapD);
-
-
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_drive);
+
+
+        Button btnFinishDrive = findViewById(R.id.btnFinishDrive);
+
+        btnFinishDrive.setOnClickListener(this::btnFinishDrive);
+
 
         Intent searchIntent = getIntent();
         startLoc = searchIntent.getStringExtra("startLoc");
         finishLoc = searchIntent.getStringExtra("finishLoc");
-
-        btnExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"asdf",Toast.LENGTH_SHORT).show();
-            }
-        });
 
         bt = new BluetoothSPP(this); //Initializing
 
@@ -117,10 +114,93 @@ public class MapActivity extends AppCompatActivity {
                     , Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        bluetoothConnect();
+        jsonPashing();
+
+
+        Log.i("size", String.valueOf(routeLatLng.size()));
+
+
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
+            TextView distance = findViewById(R.id.distance);
+
+            public void onDataReceived(byte[] data, String message) {
+                String[] array = message.split(",");
+                Log.i("message from arduino", message);
+                moveLength = array[2];
+                String total = "시속 : ".concat((array[1].concat("km/h, 이동 거리 : ")).concat(array[2].concat("km")));
+                distance.setText(total);
+                temp = 0;
+
+                String checkArray = array[0];
+                int check = Integer.parseInt(checkArray);
+                if (check == 0) {
+                    count++;
+                    if (count == 10) {
+                        temp = 1;
+                        count = 0;
+                        routeCount++;
+                    }
+                }
+                //Log.i("배열 확인", check+","+temp+","+routeLat.length+","+routeLng.length);
+                Log.i("경로 확인", route_len + " : " + routeLatLng.get(route_len).latitude + "," + routeLatLng.get(route_len).longitude);
+
+                if (temp == 1 && routeCount == 3) {
+                    if (route_len == routeLatLng.size() || route_len > routeLatLng.size()) {
+                        streetViewPanorama.setPosition(routeLatLng.get(routeLatLng.size() - 1));
+                        finishDrive();
+                    } else {
+                        route_len = route_len + 3;
+                        streetViewPanorama.setPosition(routeLatLng.get(route_len));
+                        routeCount = 0;
+                    }
+                }
+            }
+        });
+
+        bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() { //연결됐을 때
+            public void onDeviceConnected(String name, String address) {
+                Toast.makeText(getApplicationContext()
+                        , "Connected to " + name + "\n" + address
+                        , Toast.LENGTH_SHORT).show();
+                startTime = System.currentTimeMillis();
+            }
+
+            public void onDeviceDisconnected() { //연결해제
+                Toast.makeText(getApplicationContext()
+                        , "Connection lost", Toast.LENGTH_SHORT).show();
+            }
+
+            public void onDeviceConnectionFailed() { //연결실패
+                Toast.makeText(getApplicationContext()
+                        , "Unable to connect", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+
+        SupportStreetViewPanoramaFragment streetViewPanoramaFragment =
+                (SupportStreetViewPanoramaFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.streetviewpanorama);
+        streetViewPanoramaFragment.getStreetViewPanoramaAsync(
+                new OnStreetViewPanoramaReadyCallback() {
+                    @Override
+                    public void onStreetViewPanoramaReady(StreetViewPanorama panorama) {
+                        streetViewPanorama = panorama;
+                        if (savedInstanceState == null) {
+                            panorama.setPosition(routeLatLng.get(0));
+                        }
+                    }
+
+                });
+
+
+
     }
 
     public void finishDrive() {
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(MapActivity.this);
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(DriveActivity.this);
         dlgBuilder.setTitle("주행 종료");
         dlgBuilder.setMessage("목적지까지의 주행이 완료되었습니다.");
         dlgBuilder.setPositiveButton("결과 페이지로", new DialogInterface.OnClickListener() {
@@ -130,22 +210,24 @@ public class MapActivity extends AppCompatActivity {
                 resultIntent.putExtra("moveLength", moveLength);
                 resultIntent.putExtra("moveTime", moveTime);
                 startActivity(resultIntent);
-                }
-            });
+            }
+        });
         AlertDialog dlg = dlgBuilder.create();
         dlg.show();
     }
 
     public void btnFinishDrive(View view) {
-        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(MapActivity.this);
+        AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(DriveActivity.this);
         dlgBuilder.setTitle("주행 종료");
-        dlgBuilder.setMessage("목적지까지의 주행이 완료되었습니다.");
+        dlgBuilder.setMessage("주행이 완료되었습니다.");
+        endTime = System.currentTimeMillis();
+        moveTime = (int) ((endTime - startTime) / 1000);
         dlgBuilder.setPositiveButton("결과 페이지로", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent resultIntent = new Intent(getApplicationContext(), ResultActivity.class);
                 resultIntent.putExtra("moveLength", moveLength);
-                resultIntent.putExtra("moveTime", moveTime);
+                resultIntent.putExtra("moveTime", String.valueOf(moveTime));
                 startActivity(resultIntent);
             }
         });
@@ -276,7 +358,6 @@ public class MapActivity extends AppCompatActivity {
         }
 
     }
-
     public void onDestroy() {
         super.onDestroy();
         bt.stopService(); //블루투스 중지
@@ -297,11 +378,7 @@ public class MapActivity extends AppCompatActivity {
     }
 
     public void setup() {
-        btnExit.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                bt.send("Reset", true);
-            }
-        });
+        bt.send("Reset", true);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

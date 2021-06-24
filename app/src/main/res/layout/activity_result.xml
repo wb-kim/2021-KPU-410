@@ -27,7 +27,7 @@
         android:layout_height="50dp"
         android:textSize="30sp"
         android:gravity="center_horizontal"
-        android:text="총 주행 거리"/>
+        android:text="총 주행 거리 : 0.3km"/>
 
     <TextView
         android:id="@+id/resultTime"
@@ -35,7 +35,7 @@
         android:layout_height="50dp"
         android:textSize="30sp"
         android:gravity="center_horizontal"
-        android:text="주행 시간"/>
+        android:text="주행 시간 : 32초"/>
 
     <TextView
         android:layout_width="wrap_content"

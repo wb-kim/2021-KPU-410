@@ -96,7 +96,7 @@ public class SearchActivity extends AppCompatActivity implements OnMapReadyCallb
         btnDrive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
+                Intent mapIntent = new Intent(getApplicationContext(), DriveActivity.class);
                 mapIntent.putExtra("startLoc", startLoc.getText().toString());
                 mapIntent.putExtra("finishLoc", finishLoc.getText().toString());
                 startActivity(mapIntent);

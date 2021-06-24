@@ -17,14 +17,16 @@ public class ResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_result);
 
         Intent mapIntent = getIntent();
+
         moveLength = mapIntent.getStringExtra("moveLength");
         moveTime = mapIntent.getStringExtra("moveTime");
 
+
         TextView resultLength = findViewById(R.id.resultLength);
-        resultLength.setText((moveLength).concat("km"));
+        resultLength.setText("총 주행 거리 : ".concat(moveLength).concat("km"));
 
         TextView resultTime = findViewById(R.id.resultTime);
-        resultTime.setText((moveTime).concat("ms"));
+        resultTime.setText("주행 시간 : ".concat(moveTime).concat("초"));
 
         Button btnMain = findViewById(R.id.btnMain);
         btnMain.setOnClickListener(new View.OnClickListener() {
