@@ -1,7 +1,6 @@
 package com.kpu410.realbike;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 
 public class ValidateRequest extends StringRequest {
     //서버 url 설정(php파일 연동)
-    final static  private String URL=" http://1233992128e8.ngrok.io/UserValidate.php";
+    final static  private String URL="sftp://bashw80.ivyro.net/";
     private Map<String, String> map;
 
     public ValidateRequest(String UserEmail, Response.Listener<String> listener){

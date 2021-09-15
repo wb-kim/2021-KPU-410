@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="communitySpinner">
+        <item>전체</item>
+        <item>자유게시판</item>
+        <item>나만의 팁 공유</item>
+    </string-array>
+</resources>

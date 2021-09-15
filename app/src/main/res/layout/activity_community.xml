@@ -4,10 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity=""
     android:orientation="vertical"
     tools:context=".CommunityActivity">
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp" />
 
+    <ListView
+        android:id="@+id/listBoard"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+    <Button
+        android:id="@+id/btnWrite"
+        android:text="글쓰기"
+        android:layout_gravity="right"
+        android:layout_width="80dp"
+        android:layout_height="50dp"/>
 
 </LinearLayout>

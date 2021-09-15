@@ -58,10 +58,18 @@ public class SearchActivity extends AppCompatActivity implements OnMapReadyCallb
 
     private int autoSearch = 0;
 
+    private String userID;
+    private String userPass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Intent mainIntent = getIntent();
+        userID = mainIntent.getStringExtra("userID");
+        userPass = mainIntent.getStringExtra("userPass");
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -97,6 +105,8 @@ public class SearchActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onClick(View v) {
                 Intent mapIntent = new Intent(getApplicationContext(), DriveActivity.class);
+                mapIntent.putExtra("userID", userID);
+                mapIntent.putExtra("userPass", userPass);
                 mapIntent.putExtra("startLoc", startLoc.getText().toString());
                 mapIntent.putExtra("finishLoc", finishLoc.getText().toString());
                 startActivity(mapIntent);

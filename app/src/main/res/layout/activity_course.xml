@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".CourseActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="40sp"
+        android:layout_gravity="center"
+        android:text="주행 정보(로고 예정)"/>
+
+    <TextView
+        android:id="@+id/courseStart"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:text="출발지"/>
+
+    <TextView
+        android:id="@+id/courseDate"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:text="주행 날짜"/>
+
+    <TextView
+        android:id="@+id/courseDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:text="주행 거리"/>
+
+    <TextView
+        android:id="@+id/courseTime"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:text="주행 시간"/>
+
+</LinearLayout>

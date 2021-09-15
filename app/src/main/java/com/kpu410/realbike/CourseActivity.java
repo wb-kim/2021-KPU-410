@@ -14,31 +14,31 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class InfoActivity extends AppCompatActivity {
+public class CourseActivity extends AppCompatActivity {
 
-    private TextView infoID;
-    private TextView infoName;
-    private TextView infoEmail;
-    private TextView infoDistance;
-    private TextView infoTime;
+    private TextView courseStart;
+    private TextView courseDate;
+    private TextView courseDistance;
+    private TextView courseTime;
 
     private String userID;
     private String userPass;
+    private String course_num;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info);
+        setContentView(R.layout.activity_course);
 
-        Intent myPageIntent = getIntent();
-        userID = myPageIntent.getStringExtra("userID");
-        userPass = myPageIntent.getStringExtra("userPass");
+        Intent dashboardIntent = getIntent();
+        userID = dashboardIntent.getStringExtra("userID");
+        userPass = dashboardIntent.getStringExtra("userPass");
+        course_num = dashboardIntent.getStringExtra("course_num");
 
-        infoID = findViewById(R.id.infoID);
-        infoName = findViewById(R.id.infoName);
-        infoEmail = findViewById(R.id.infoEmail);
-        infoDistance = findViewById(R.id.infoDistance);
-        infoTime = findViewById(R.id.infoTime);
+        courseStart = findViewById(R.id.courseStart);
+        courseDate = findViewById(R.id.courseDate);
+        courseDistance = findViewById(R.id.courseDistance);
+        courseTime = findViewById(R.id.courseTime);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -47,11 +47,10 @@ public class InfoActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
-                        infoID.setText(jsonObject.getString("userID"));
-                        infoName.setText(jsonObject.getString("userName"));
-                        infoEmail.setText(jsonObject.getString("userAge"));
-                        infoDistance.setText(jsonObject.getString("total_length"));
-                        infoTime.setText(jsonObject.getString("total_time"));
+                        courseStart.setText(jsonObject.getString("start"));
+                        courseDate.setText(jsonObject.getString("date"));
+                        courseDistance.setText(jsonObject.getString("length"));
+                        courseTime.setText(jsonObject.getString("time"));
                     } else {
                         Toast.makeText(getApplicationContext(), "정보 로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
@@ -61,9 +60,8 @@ public class InfoActivity extends AppCompatActivity {
             }
         };
 
-        InfoRequest infoRequest = new InfoRequest( userID, responseListener );
-        RequestQueue queue = Volley.newRequestQueue( InfoActivity.this );
-        queue.add( infoRequest );
-
+        CourseRequest courseRequest = new CourseRequest( course_num, responseListener );
+        RequestQueue queue = Volley.newRequestQueue( CourseActivity.this );
+        queue.add( courseRequest );
     }
 }

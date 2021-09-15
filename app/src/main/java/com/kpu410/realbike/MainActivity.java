@@ -17,16 +17,25 @@ import app.akexorcist.bluetotohspp.library.DeviceList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private String userID;
+    private String userPass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent loginIntent = getIntent();
+        userID = loginIntent.getStringExtra("userID");
+        userPass = loginIntent.getStringExtra("userPass");
 
         Button btnMyPage = findViewById(R.id.btnMyPage);
         btnMyPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
                 startActivity(intent);
             }
         });
@@ -36,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), CommunityActivity.class);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
                 startActivity(intent);
             }
         });
@@ -45,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
                 startActivity(intent);
             }
         });
@@ -54,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), TestActivity.class);
+                intent.putExtra("userID", userID);
+                intent.putExtra("userPass", userPass);
                 startActivity(intent);
             }
         });

@@ -91,6 +91,9 @@ public class DriveActivity extends AppCompatActivity {
 
     private LatLng startLatLng;
 
+    private String userID;
+    private String userPass;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +106,8 @@ public class DriveActivity extends AppCompatActivity {
 
 
         Intent searchIntent = getIntent();
+        userID = searchIntent.getStringExtra("userID");
+        userPass = searchIntent.getStringExtra("userPass");
         startLoc = searchIntent.getStringExtra("startLoc");
         finishLoc = searchIntent.getStringExtra("finishLoc");
 
@@ -206,7 +211,10 @@ public class DriveActivity extends AppCompatActivity {
         dlgBuilder.setPositiveButton("결과 페이지로", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                onDestroy();
                 Intent resultIntent = new Intent(getApplicationContext(), ResultActivity.class);
+                resultIntent.putExtra("userID", userID);
+                resultIntent.putExtra("userPass", userPass);
                 resultIntent.putExtra("moveLength", moveLength);
                 resultIntent.putExtra("moveTime", moveTime);
                 startActivity(resultIntent);
@@ -225,7 +233,10 @@ public class DriveActivity extends AppCompatActivity {
         dlgBuilder.setPositiveButton("결과 페이지로", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                onDestroy();
                 Intent resultIntent = new Intent(getApplicationContext(), ResultActivity.class);
+                resultIntent.putExtra("userID", userID);
+                resultIntent.putExtra("userPass", userPass);
                 resultIntent.putExtra("moveLength", moveLength);
                 resultIntent.putExtra("moveTime", String.valueOf(moveTime));
                 startActivity(resultIntent);

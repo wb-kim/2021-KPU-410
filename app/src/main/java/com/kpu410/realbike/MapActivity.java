@@ -91,7 +91,8 @@ public class MapActivity extends AppCompatActivity {
 
     private Button btnExit = findViewById(R.id.btnMapD);
 
-
+    private String userID;
+    private String userPass;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -101,6 +102,8 @@ public class MapActivity extends AppCompatActivity {
         Intent searchIntent = getIntent();
         startLoc = searchIntent.getStringExtra("startLoc");
         finishLoc = searchIntent.getStringExtra("finishLoc");
+        userID = searchIntent.getStringExtra("userID");
+        userPass = searchIntent.getStringExtra("userPass");
 
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
