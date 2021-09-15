@@ -27,7 +27,7 @@
         android:layout_height="50dp"
         android:textSize="30sp"
         android:gravity="center_horizontal"
-        android:text="총 주행 거리 : 0.3km"/>
+        android:text="총 주행 거리"/>
 
     <TextView
         android:id="@+id/resultTime"
@@ -35,7 +35,7 @@
         android:layout_height="50dp"
         android:textSize="30sp"
         android:gravity="center_horizontal"
-        android:text="주행 시간 : 32초"/>
+        android:text="주행 시간"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,4 +50,11 @@
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:text="메인으로 이동"/>
+
+    <Button
+        android:id="@+id/btnresult"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="결과 저장" />
 </LinearLayout>
