@@ -44,6 +44,9 @@ public class CourseActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
+                    if (response.startsWith("ï»¿")){
+                        response = response.substring(3);
+                    }
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {

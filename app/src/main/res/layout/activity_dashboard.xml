@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     tools:context=".DashboardActivity">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="50dp"
+
         android:gravity="center"
         android:text="현재까지의 기록"
         android:textSize="30sp" />
@@ -17,7 +18,7 @@
     <ListView
         android:id="@+id/listDashboard"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"/>
+        android:layout_height="500dp"
+        />
 
 </LinearLayout>

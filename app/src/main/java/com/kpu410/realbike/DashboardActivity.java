@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -41,28 +42,34 @@ public class DashboardActivity extends AppCompatActivity {
         userID = myPageIntent.getStringExtra("userID");
         userPass = myPageIntent.getStringExtra("userPass");
 
-        listDashboard = findViewById(R.id.listDashboard);
+        listDashboard = (ListView)findViewById(R.id.listDashboard);
 
-        ArrayList<HashMap<String, String>> list = new ArrayList<>();
+        ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        boolean success = jsonObject.getBoolean("success");
-                        if (success) {
-                            HashMap<String, String> item = new HashMap<>();
-                            item.put("course_num", jsonObject.getString("course_num"));
-                            item.put("date", jsonObject.getString("date"));
-                            item.put("start", jsonObject.getString("start"));
+                    if (response.startsWith("ï»¿")){
+                        response = response.substring(3);
+                    }
 
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean success = jsonObject.getBoolean("success");
+                    if (success) {
+                        JSONArray legArray = jsonObject.getJSONArray("0");
+                        for (int i = 0; i < legArray.length(); i++) {
+                            JSONObject legObject = legArray.getJSONObject(i);
+                            HashMap<String, String> item = new HashMap<String, String>();
+                            item.put("course_num", legObject.getString("course_num"));
+                            item.put("date", legObject.getString("date"));
+                            item.put("start", legObject.getString("start"));
+                            Log.i("asdf : ", legObject.getString("course_num"));
                             list.add(item);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "정보 로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                            Log.i("asdf : ", list.get(i).toString());
                         }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "정보 로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -74,13 +81,10 @@ public class DashboardActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue( DashboardActivity.this );
         queue.add( dashboardRequest );
 
-        String[] from = {"date", "start"};
+        SimpleAdapter listAdapter = new SimpleAdapter(getApplicationContext(), list, android.R.layout.simple_list_item_2,
+                new String[]{"date", "start"}, new int[]{android.R.id.text1, android.R.id.text2});
 
-        int[] to = new int[] {android.R.id.text1, android.R.id.text2};
-
-        SimpleAdapter adapter = new SimpleAdapter(this, list, android.R.layout.simple_list_item_2, from, to);
-
-        listDashboard.setAdapter(adapter);
+        listDashboard.setAdapter(listAdapter);
 
         listDashboard.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -44,14 +44,17 @@ public class InfoActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 try {
+                    if (response.startsWith("ï»¿")){
+                        response = response.substring(3);
+                    }
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
-                        infoID.setText(jsonObject.getString("userID"));
-                        infoName.setText(jsonObject.getString("userName"));
-                        infoEmail.setText(jsonObject.getString("userAge"));
-                        infoDistance.setText(jsonObject.getString("total_length"));
-                        infoTime.setText(jsonObject.getString("total_time"));
+                        infoID.setText("접속중인 ID : ".concat(jsonObject.getString("userID")));
+                        infoName.setText("닉네임 : ".concat(jsonObject.getString("userName")));
+                        infoEmail.setText("나이 : ".concat(jsonObject.getString("userAge")));
+                        infoDistance.setText("총 주행 거리 : ".concat(jsonObject.getString("total_length")));
+                        infoTime.setText("총 주행 시간 : ".concat(jsonObject.getString("total_time")));
                     } else {
                         Toast.makeText(getApplicationContext(), "정보 로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }

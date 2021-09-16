@@ -1,4 +1,6 @@
 package com.kpu410.realbike;
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -16,6 +18,7 @@ public class InfoRequest extends StringRequest {
     public InfoRequest(String userID, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
 
+        //.i("id", userID);
         map = new HashMap<>();
         map.put("userID",userID);
     }
