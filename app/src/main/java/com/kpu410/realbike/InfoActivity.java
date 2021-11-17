@@ -53,8 +53,8 @@ public class InfoActivity extends AppCompatActivity {
                         infoID.setText("접속중인 ID : ".concat(jsonObject.getString("userID")));
                         infoName.setText("닉네임 : ".concat(jsonObject.getString("userName")));
                         infoEmail.setText("나이 : ".concat(jsonObject.getString("userAge")));
-                        infoDistance.setText("총 주행 거리 : ".concat(jsonObject.getString("total_length")));
-                        infoTime.setText("총 주행 시간 : ".concat(jsonObject.getString("total_time")));
+                        infoDistance.setText("총 주행 거리 : ".concat(jsonObject.getString("total_distance")).concat("km"));
+                        infoTime.setText("총 주행 시간 : ".concat(setTime(Integer.parseInt(jsonObject.getString("total_time")))));
                     } else {
                         Toast.makeText(getApplicationContext(), "정보 로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
@@ -68,5 +68,12 @@ public class InfoActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue( InfoActivity.this );
         queue.add( infoRequest );
 
+    }
+
+    private String setTime(int time) {
+        int hour = time / 3600;
+        int minute = (time - hour * 3600) / 60;
+        int second = time % 60;
+        return String.format("%02d", hour).concat(":").concat(String.format("%02d", minute)).concat(":").concat(String.format("%02d", second));
     }
 }

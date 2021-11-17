@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:hint="출발지"
-        android:text="PATH 세계무역센터 역 미국 10007 New York"
+        android:text=""
         android:focusable="false"
         android:textSize="15sp"/>
 
@@ -22,7 +22,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:hint="도착지"
-        android:text="Vivvi | Child Care and Early Learning, 50 Park Pl, New York, NY 10007 미국"
+        android:text=""
         android:focusable="false"
         android:textSize="15sp"/>
 

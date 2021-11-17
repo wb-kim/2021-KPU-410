@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class CourseActivity extends AppCompatActivity {
         userPass = dashboardIntent.getStringExtra("userPass");
         course_num = dashboardIntent.getStringExtra("course_num");
 
+        Log.i("course_num : ", course_num);
         courseStart = findViewById(R.id.courseStart);
         courseDate = findViewById(R.id.courseDate);
         courseDistance = findViewById(R.id.courseDistance);
@@ -50,10 +52,10 @@ public class CourseActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response);
                     boolean success = jsonObject.getBoolean("success");
                     if (success) {
-                        courseStart.setText(jsonObject.getString("start"));
-                        courseDate.setText(jsonObject.getString("date"));
-                        courseDistance.setText(jsonObject.getString("length"));
-                        courseTime.setText(jsonObject.getString("time"));
+                        courseStart.setText("출발지 : ".concat(jsonObject.getString("start")));
+                        courseDate.setText("주행일 : ".concat(jsonObject.getString("date")));
+                        courseDistance.setText("주행거리 : ".concat(jsonObject.getString("length")).concat("km"));
+                        courseTime.setText("주행시간 : ".concat(setTime(Integer.parseInt(jsonObject.getString("time")))));
                     } else {
                         Toast.makeText(getApplicationContext(), "정보 로드에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                     }
@@ -66,5 +68,12 @@ public class CourseActivity extends AppCompatActivity {
         CourseRequest courseRequest = new CourseRequest( course_num, responseListener );
         RequestQueue queue = Volley.newRequestQueue( CourseActivity.this );
         queue.add( courseRequest );
+    }
+
+    private String setTime(int time) {
+        int hour = time / 3600;
+        int minute = (time - hour * 3600) / 60;
+        int second = time % 60;
+        return String.format("%02d", hour).concat(":").concat(String.format("%02d", minute)).concat(":").concat(String.format("%02d", second));
     }
 }

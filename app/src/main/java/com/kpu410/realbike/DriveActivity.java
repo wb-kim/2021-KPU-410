@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -130,35 +131,42 @@ public class DriveActivity extends AppCompatActivity {
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             TextView distance = findViewById(R.id.distance);
 
+            int messageCheck = 0;
+
             public void onDataReceived(byte[] data, String message) {
-                String[] array = message.split(",");
-                Log.i("message from arduino", message);
-                moveLength = array[2];
-                String total = "시속 : ".concat((array[1].concat("km/h, 이동 거리 : ")).concat(array[2].concat("km")));
-                distance.setText(total);
-                temp = 0;
+                if (message.length() != 11 && messageCheck == 0) {
+                    Log.i("message from arduino", message);
+                } else {
+                    messageCheck = 1;
+                    String[] array = message.split(",");
+                    Log.i("message from arduino", message);
+                    moveLength = array[2];
+                    String total = "시속 : ".concat((array[1].concat("km/h, 이동 거리 : ")).concat(array[2].concat("km")));
+                    distance.setText(total);
+                    temp = 0;
 
-                String checkArray = array[0];
-                int check = Integer.parseInt(checkArray);
-                if (check == 0) {
-                    count++;
-                    if (count == 10) {
-                        temp = 1;
-                        count = 0;
-                        routeCount++;
+                    String checkArray = array[0];
+                    int check = Integer.parseInt(checkArray);
+                    if (check == 0) {
+                        count++;
+                        if (count == 10) {
+                            temp = 1;
+                            count = 0;
+                            routeCount++;
+                        }
                     }
-                }
-                //Log.i("배열 확인", check+","+temp+","+routeLat.length+","+routeLng.length);
-                Log.i("경로 확인", route_len + " : " + routeLatLng.get(route_len).latitude + "," + routeLatLng.get(route_len).longitude);
+                    //Log.i("배열 확인", check+","+temp+","+routeLat.length+","+routeLng.length);
+                    Log.i("경로 확인", route_len + " : " + routeLatLng.get(route_len).latitude + "," + routeLatLng.get(route_len).longitude);
 
-                if (temp == 1 && routeCount == 3) {
-                    if (route_len == routeLatLng.size() || route_len > routeLatLng.size()) {
-                        streetViewPanorama.setPosition(routeLatLng.get(routeLatLng.size() - 1));
-                        finishDrive();
-                    } else {
-                        route_len = route_len + 3;
-                        streetViewPanorama.setPosition(routeLatLng.get(route_len));
-                        routeCount = 0;
+                    if (temp == 1 && routeCount == 3) {
+                        if (route_len == routeLatLng.size() || route_len > routeLatLng.size()) {
+                            streetViewPanorama.setPosition(routeLatLng.get(routeLatLng.size() - 1));
+                            finishDrive();
+                        } else {
+                            route_len = route_len + 3;
+                            streetViewPanorama.setPosition(routeLatLng.get(route_len));
+                            routeCount = 0;
+                        }
                     }
                 }
             }

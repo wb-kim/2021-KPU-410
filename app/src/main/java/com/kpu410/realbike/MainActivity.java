@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button btnCommunity = findViewById(R.id.btnCommunity);
+        /*Button btnCommunity = findViewById(R.id.btnCommunity);
         btnCommunity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("userPass", userPass);
                 startActivity(intent);
             }
-        });
+        });*/
 
         Button btnMap = findViewById(R.id.btnMap);
         btnMap.setOnClickListener(new View.OnClickListener() {

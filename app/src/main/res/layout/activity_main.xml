@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:textSize="40sp"
         android:layout_gravity="center"
-        android:text="메인(로고 예정)"/>
+        android:text="메인"/>
 
 
     <Button
@@ -36,11 +36,11 @@
         android:layout_gravity="center"
         android:text="주행(지도 X)"/>
 
-    <Button
+    <!--Button
         android:id="@+id/btnCommunity"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:text="커뮤니티"/>
+        android:text="커뮤니티"/-->
 
 </LinearLayout>

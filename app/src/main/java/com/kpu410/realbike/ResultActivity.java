@@ -26,7 +26,6 @@ public class ResultActivity extends AppCompatActivity {
     private String userPass;
     private String startLoc;
     private String finishLoc;
-    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy/M/d"); // 날짜 포맷
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,27 +34,23 @@ public class ResultActivity extends AppCompatActivity {
         Intent loginIntent = getIntent();
         userID = loginIntent.getStringExtra("userID");
         userPass = loginIntent.getStringExtra("userPass");
-        Date time = new Date();
-        String date = mFormat.format(time);
         Intent mapIntent = getIntent();
         moveLength = mapIntent.getStringExtra("moveLength");
         moveTime = mapIntent.getStringExtra("moveTime");
         Intent searchIntent = getIntent();
-        startLoc = searchIntent.getStringExtra("startLoc");
-        finishLoc = searchIntent.getStringExtra("finishLoc");
+        //startLoc = searchIntent.getStringExtra("startLoc");
+        startLoc = "New York";
+        //finishLoc = searchIntent.getStringExtra("finishLoc");
+        finishLoc = "New York";
         TextView resultLength = findViewById(R.id.resultLength);
         resultLength.setText((moveLength).concat("km"));
 
         TextView resultTime = findViewById(R.id.resultTime);
-        resultTime.setText((moveTime).concat("ms"));
+        resultTime.setText(setTime(Integer.parseInt(moveTime)));
         Button btnresult = findViewById(R.id.btnresult);
         btnresult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MyPageActivity.class);
-                intent.putExtra("userID", userID);
-                intent.putExtra("userPass", userPass);
-                startActivity(intent);
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -64,7 +59,9 @@ public class ResultActivity extends AppCompatActivity {
                             boolean success = jsonObject.getBoolean("success");
                             if (success) { // 회원등록에 성공한 경우
                                 Toast.makeText(getApplicationContext(),"결과 정보 등록이 완료되었습니다.",Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(ResultActivity.this, LoginActivity.class);
+                                Intent intent = new Intent(ResultActivity.this, MyPageActivity.class);
+                                intent.putExtra("userID", userID);
+                                intent.putExtra("userPass", userPass);
                                 startActivity(intent);
                             } else { // 회원등록에 실패한 경우
                                 Toast.makeText(getApplicationContext(),"결과 정보 등록이 실패하였습니다.",Toast.LENGTH_SHORT).show();
@@ -79,7 +76,7 @@ public class ResultActivity extends AppCompatActivity {
 
 
 
-                ResultRequest resultRequest = new ResultRequest (userID, startLoc,finishLoc,moveLength,moveTime,date,responseListener);
+                ResultRequest resultRequest = new ResultRequest (userID, startLoc,finishLoc,moveLength,moveTime,responseListener);
                 RequestQueue queue = Volley.newRequestQueue(ResultActivity.this);
                 queue.add(resultRequest);
             }});
@@ -92,5 +89,12 @@ public class ResultActivity extends AppCompatActivity {
                 startActivity(mainIntent);
             }
         });
+    }
+
+    private String setTime(int time) {
+        int hour = time / 3600;
+        int minute = (time - hour * 3600) / 60;
+        int second = time % 60;
+        return String.format("%02d", hour).concat(":").concat(String.format("%02d", minute)).concat(":").concat(String.format("%02d", second));
     }
 }

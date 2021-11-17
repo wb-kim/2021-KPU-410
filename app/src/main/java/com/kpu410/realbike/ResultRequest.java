@@ -1,4 +1,6 @@
 package com.kpu410.realbike;
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
@@ -13,16 +15,20 @@ public class ResultRequest extends StringRequest {
     private Map<String, String> map;
     //private Map<String, String>parameters;
 
-    public ResultRequest(String userID,String startLoc,String finishLoc,String moveLength,String moveTime,String date,Response.Listener<String> listener){
+    public ResultRequest(String userID,String startLoc,String finishLoc,String moveLength,String moveTime,Response.Listener<String> listener){
         super(Method.POST, URL, listener, null);
 
+        //Log.i("userID ", userID);
+        //Log.i("start ", startLoc);
+        //Log.i("finish ", finishLoc);
+        //Log.i("time ", moveTime);
+        //Log.i("length ", moveLength);
         map = new HashMap<>();
         map.put("userID",userID);
         map.put("start",startLoc);
         map.put("finish",finishLoc);
-        map.put("date",date);
-        map.put("length",moveTime);
-        map.put("time",moveLength);
+        map.put("time",moveTime);
+        map.put("length",moveLength);
 
     }
 

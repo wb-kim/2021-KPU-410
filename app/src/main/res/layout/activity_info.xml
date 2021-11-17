@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:textSize="40sp"
         android:layout_gravity="center"
-        android:text="유저 정보(로고 예정)"/>
+        android:text="유저 정보"/>
 
     <TextView
         android:id="@+id/infoID"

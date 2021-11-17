@@ -9,7 +9,7 @@ import java.util.Map;
 public class CourseRequest extends StringRequest {
 
     //서버 URL 설정(php 파일 연동)
-    final static private String URL = "http://bashw80.ivyro.net/myInfo.php";
+    final static private String URL = "http://bashw80.ivyro.net/courseDetail.php";
     private Map<String, String> map;
     //private Map<String, String>parameters;
 
